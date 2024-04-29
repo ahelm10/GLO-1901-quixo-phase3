@@ -9,6 +9,7 @@ class QuixoIA(Quixo):
     def valider_diagonale(self, plateau, nb_pions=5):
         if nb_pions < 3 or nb_pions > 5:
             raise QuixoError("Le nombre de pions doit être entre 3 et 5.")
+        compteur_X = compteur_X = 0
         liste_X = []
         liste_O = []
         diagonale = []
