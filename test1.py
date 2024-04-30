@@ -1,5 +1,5 @@
 from plateau import *
-import QuixoError
+from quixo_error import*
 
 def test_creation():
     plateau_input = [
@@ -70,11 +70,12 @@ def valider_diagonale(plateau, nb_pions=5):
 
         resultat = {"X": coord_x , "O": coord_o}
         return resultat
-        plateau = [
-                [" ", " ", " ", " ", "o"],
-                [" ", "X", " ", " ", " "],
-                [" ", " ", "X", " ", " "],
-                [" ", " ", " ", "X", " "],
-                [" ", " ", " ", "O", " "],
-            ]
-        print(valider_diagonale(plateau, 3))
+plateau = [
+        [" ", " ", " ", " ", "o"],
+        [" ", "X", " ", " ", " "],
+        [" ", " ", "X", " ", " "],
+        [" ", " ", " ", "X", " "],
+        [" ", " ", " ", "O", " "],
+    ]
+print(valider_diagonale(plateau, 3))
+    
