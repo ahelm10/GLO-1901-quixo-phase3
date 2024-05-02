@@ -34,48 +34,31 @@ def test_insertion():
 #test_insertion()
 #test_creation()
 
-def valider_diagonale(plateau, nb_pions=5):
+def valider_horizontale(plateau, nb_pions=5):
         if nb_pions < 3 or nb_pions > 5:
-            raise QuixoError("Le nombre de pions doit être entre 3 et 5.")
-        compteur_X = 0
-        compteur_O = 0
-        liste_X = []
-        liste_O = []
-        diagonale = []
-        cord_x_debut = []
-        cord_x_fin = []
-        cord_o_debut = []
-        cord_o_fin = []
+                raise QuixoError("Le nombre de pions doit être entre 3 et 5.")
         coord_x = []
         coord_o = []
         for i in range(len(plateau)):
-            diagonale.append(plateau[i][i])
-            if (plateau[i][i]).upper() == 'X':
-                compteur_X += 1
-                liste_X.append((i+1, i+1))
-            elif(plateau[i][i]).upper() == 'O':
-                compteur_O += 1
-                liste_O.append((i+1, i+1))
-        if compteur_X == nb_pions:
-            cord_x_debut.append([str(diagonale.index('X')+1), str(diagonale.index('X')+1)])
-            diagonale.reverse()
-            cord_x_fin.append([str(len(plateau)-diagonale.index('X')), str(len(plateau)-diagonale.index('X'))])
-            diagonale.reverse()
-            coord_x = [cord_x_debut,cord_x_fin]
-        if compteur_O == nb_pions:
-            cord_o_debut.append([str(diagonale.index('O')+1), str(diagonale.index('O')+1)])
-            diagonale.reverse()
-            cord_o_fin.append([str(len(plateau)-diagonale.index('O')), str(len(plateau)-diagonale.index('O'))])
-            coord_o = [cord_o_debut,cord_o_fin]
-
-        resultat = {"X": coord_x , "O": coord_o}
+            compteur_X = 0
+            compteur_O = 0
+            for j in range(len(plateau)):
+                if (plateau[i][j]).upper() == 'X':
+                    compteur_X += 1
+                if(plateau[i][j]).upper() == 'O':
+                    compteur_O += 1
+            if compteur_X >= nb_pions:
+                coord_x.append([[1, i+1], [5, i+1]])
+            if compteur_O >= nb_pions:
+                coord_o.append([[1, i+1], [5, i+1]])
+        resultat = {"X": coord_x , "O":coord_o}
         return resultat
 plateau = [
-        [" ", " ", " ", " ", "o"],
-        [" ", "X", " ", " ", " "],
-        [" ", " ", "X", " ", " "],
-        [" ", " ", " ", "X", " "],
-        [" ", " ", " ", "O", " "],
+        [" ", "X", "X", " ", "X"],
+        ["X", "X", "X", " ", " "],
+        [" ", " ", "X", " ", "O"],
+        ["X", "X", " ", "X", "X"],
+        [" ", " ", " ", " ", " "],
     ]
-print(valider_diagonale(plateau, 3))
+print(valider_horizontale(plateau, 3))
     
