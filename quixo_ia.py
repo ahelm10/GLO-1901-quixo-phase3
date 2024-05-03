@@ -61,17 +61,48 @@ class QuixoIA(Quixo):
             raise QuixoError("Le nombre de pions doit être entre 3 et 5.")
         coord_x = []
         coord_o = []
-        for j in range(len(plateau[0])):
+        for j in range(len(plateau)):
             compteur_X = 0
             compteur_O = 0
             for i in range(len(plateau)):
                 if (plateau[i][j]).upper() == 'X':
-                    compteur_X == 0:
+                    compteur_X += 1
                 if(plateau[i][j]).upper() == 'O':
                     compteur_O += 1
             if compteur_X >= nb_pions:
-                coord_x.append([[1, i+1], [5, i+1]])
+                coord_x.append([[j+1, 1], [j+1, 5]])
             if compteur_O >= nb_pions:
-                coord_o.append([[1, i+1], [5, i+1]])
-        resultat = {"X": coord_x , "O":coord_o}
+                coord_o.append([[j+1, 1], [j+1, 5]])
+        resultat = {"X": coord_x , "O": coord_o}
         return resultat
+    
+    def partie_terminée(self):
+        for f in (self.valider_horizontale, self.valider_verticale, self.valider_diagonale):
+            resultat = f(self.plateau)
+            for joueur in ['X', 'O']:
+                if len(resultat[joueur]) > 0:
+                    return joueur
+        return None
+
+    def trouver_coup_gagnant(self, pion):
+        for i in range(5):
+            for j in range(5):
+                if self.plateau[i][j] == ' ':
+                    self.plateau[i][j] = pion
+                    if self.partie_terminee() == pion:
+                        self.plateau[i][j] = ' '
+                        return (i, j)
+                    self.plateau[i][j] = ' '
+        raise QuixoError("Aucun coup gagnant possible.")
+
+    def trouver_coup_bloquant(self, pion):
+        adversaire = 'O' if pion == 'X' else 'X'
+        for i in range(5):
+            for j in range(5):
+                if self.plateau[i][j] == ' ':
+                    self.plateau[i][j] = adversaire
+                    if self.partie_terminee() == adversaire:
+                        self.plateau[i][j] = ' '
+                        return (i, j)
+                    self.plateau[i][j] = ' '
+        raise QuixoError("Aucun coup bloquant possible.")
