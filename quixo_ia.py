@@ -146,3 +146,27 @@ class QuixoIA(Quixo):
                     return pion_coord, direction
 
         raise QuixoError("Aucun coup gagnant possible.")
+    
+    def trouver_coup_bloquant(self, pion):
+        plateau = self.plateau
+        adversaire = 'O' if pion == 'X' else 'X'
+        directions = [(0, 1), (1, 0), (1, 1), (-1, 1)]  
+        
+        for x in range(len(plateau)):
+            for y in range(len(plateau[x])):
+                if plateau[x][y].upper() == adversaire:
+                    for dx, dy in directions:
+                        compte = 1
+                        for step in range(1, 4):
+                            nx, ny = x + dx * step, y + dy * step
+                            if 0 <= nx < len(plateau) and 0 <= ny < len(plateau[nx]) and plateau[nx][ny].upper() == adversaire:
+                                compte += 1
+                            else:
+                                break
+                        if compte == 4:
+                            for step in range(5):
+                                nx, ny = x + dx * step, y + dy * step
+                                if 0 <= nx < len(plateau) and 0 <= ny < len(plateau[nx]) and plateau[nx][ny] == ' ':
+                                    if (nx == 0 or nx == len(plateau)-1 or ny == 0 or ny == len(plateau[nx])-1):
+                                        return (nx, ny), 'haut' if dy == -1 else 'bas' if dy == 1 else 'gauche' if dx == -1 else 'droite'
+        raise QuixoError("Aucun coup bloquant possible.")
