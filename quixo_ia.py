@@ -170,3 +170,28 @@ class QuixoIA(Quixo):
                                     if (nx == 0 or nx == len(plateau)-1 or ny == 0 or ny == len(plateau[nx])-1):
                                         return (nx, ny), 'haut' if dy == -1 else 'bas' if dy == 1 else 'gauche' if dx == -1 else 'droite'
         raise QuixoError("Aucun coup bloquant possible.")
+    
+    import random
+    
+    
+    def jouer_le_coup(self, pion):
+        if self.partie_terminee():
+            raise QuixoError("La partie déjà est terminée.")
+        
+        try:
+            coup_gagnant = self.trouver_coup_gagnant(pion)
+            if coup_gagnant:
+                self.deplacer_pion(coup_gagnant[0], coup_gagnant[1], self.plateau)
+                return coup_gagnant
+            coup_bloquant = self.trouver_coup_bloquant(pion)
+            if coup_bloquant:
+                self.deplacer_pion(coup_bloquant[0], coup_bloquant[1], self.plateau)
+                return coup_bloquant
+        except QuixoError:
+            coups_jouables = self.coups_jouables(self.plateau, pion)
+            if not coups_jouables:
+                raise QuixoError("Aucun coup n'est possible.")
+            
+            coup_aleatoire = random.choice(coups_jouables)
+            self.deplacer_pion(coup_aleatoire[0], coup_aleatoire[1], self.plateau)
+            return coup_aleatoire
