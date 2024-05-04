@@ -157,7 +157,7 @@ class Plateau:
         elif direction == "gauche":
             self.insertion_par_la_gauche(pion, origine)
         elif direction == "droite":
-            self.insertion_par_la_droite(pion, origine)
+            self.insertion_par_la_droite(pion, destination)
         else:
             raise QuixoError("La direction doit être 'haut', 'bas', 'gauche' ou 'droite'.")
 
@@ -179,22 +179,22 @@ class Plateau:
         for i in range(4):
             self.plateau[i][y] = self.plateau[i+1][y]
         self.plateau[4][y] = pion
-    def insertion_par_le_haut(self, pion, origine):
-        """Insère un pion dans le plateau en direction du haut
+        def insertion_par_le_haut(self, pion, origine):
+            """Insère un pion dans le plateau en direction du haut
 
-        Args:
-            pion (str): La valeur du pion à insérer, soit "X" ou "O".
-            destination (list[int]): La position [x, y] où insérer le pion.
+            Args:
+                pion (str): La valeur du pion à insérer, soit "X" ou "O".
+                destination (list[int]): La position [x, y] où insérer le pion.
 
-        Raises:
-            QuixoError: La destination doit avoir une position y de 1.
-        """
+            Raises:
+                QuixoError: La destination doit avoir une position y de 1.
+            """
         x1, y1 = origine
         x = x1
-        y = 1
+        y = y1
         x = x-1
         y = y-1
-        for i in range(4,0,-1):
+        for i in range(x,0,-1):
             self.plateau[i][y] = self.plateau[i-1][y]
         self.plateau[0][y] = pion
 
@@ -209,11 +209,11 @@ class Plateau:
             QuixoError: La destination doit avoir une position x de 1.
         """
         x1, y1 = origine
-        x = 1
+        x = x1
         y = y1
         x = x-1
         y = y-1
-        for i in range(4,0,-1):
+        for i in range(y,0,-1):
             self.plateau[x][i] = self.plateau[x][i-1]
         self.plateau[x][0] = pion
 

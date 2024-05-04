@@ -84,33 +84,65 @@ class QuixoIA(Quixo):
                     return joueur
         return None
     
-    def pions_jouables(self,plateau, pion):
+    def pions_jouables(self, plateau, pion):
         jouables  = []
-        for i in range(len(plateau)):
-            for j in range(len(plateau)):
-                if (plateau[i][j]).upper() in [pion.upper(), ' '] and (i in [0, 4] or j in [0, 4]):
-                    jouables.append((i,j))
+        plateau_copie = plateau.état_plateau()
+        for i in range(len(plateau_copie)):
+            for j in range(len(plateau_copie)):
+                if (plateau_copie[i][j]).upper() in [pion.upper(), ' '] and (i in [0, 4] or j in [0, 4]):
+                    jouables.append((i+1,j+1))
+        return jouables
+    
+    def coups_jouables(self,plateau, pion):
+        jouables  = []
+        directions  = ["haut", "bas", "gauche", "droite"]
+        plateau_copie = plateau.état_plateau()
+        for coord in self.pions_jouables(plateau_copie, pion):
+            x,y = coord
+            for direction in directions:
+                jouables.append(([x, y], direction))
         return jouables
 
-    def trouver_coup_gagnant(self, pion):
-        try:
-            for f in [self.valider_horizontale, self.valider_verticale, self.valider_diagonale]:
-                resultat = f(self.plateau)
-                if pion in resultat and resultat[pion]:
-                    return resultat[pion]
-            raise QuixoError("Aucun coup gagnant possible.")
-        except QuixoError as e:
-            print(e)
-        return None
+    def simuler_deplacement(self, pion_coord, coup, plateau):
+        plateau_temp = [row[:] for row in plateau]
+        x, y = pion_coord
+        coup_x, coup_y = coup
+        plateau_temp[coup_x][coup_y] = plateau_temp[x][y]
+        plateau_temp[x][y] = ' '
+        return plateau_temp
 
-    def trouver_coup_bloquant(self, pion):
-        adversaire = 'O' if pion == 'X' else 'X'
-        for i in range(5):
-            for j in range(5):
-                if self.plateau[i][j] == ' ':
-                    self.plateau[i][j] = adversaire
-                    if self.partie_terminee() == adversaire:
-                        self.plateau[i][j] = ' '
-                        return (i, j)
-                    self.plateau[i][j] = ' '
-        raise QuixoError("Aucun coup bloquant possible.")
+    def est_coup_gagnant(self, plateau, coup, pion):
+        x, y = coup
+        directions = [(-1, 0), (1, 0), (0, -1), (0, 1), (-1, -1), (1, 1), (-1, 1), (1, -1)]
+        
+        def compte_pions(dx, dy):
+            count = 1
+            for step in range(1, 5):
+                nx, ny = x + step * dx, y + step * dy
+                if 0 <= nx < len(plateau) and 0 <= ny < len(plateau[0]) and plateau[nx][ny] == pion:
+                    count += 1
+                else:
+                    break
+            for step in range(1, 5):
+                nx, ny = x - step * dx, y - step * dy
+                if 0 <= nx < len(plateau) and 0 <= ny < len(plateau[0]) and plateau[nx][ny] == pion:
+                    count += 1
+                else:
+                    break
+            return count >= 5
+
+        for dx, dy in directions:
+            if compte_pions(dx, dy):
+                return True
+        return False
+
+    def trouver_coup_gagnant(self, pion):
+        pions_jouables = self.pions_jouables(self.plateau, pion)
+        for pion_coord in pions_jouables:
+            coups = self.coups_jouables(self.plateau, pion, pion_coord)
+            for coup, direction in coups:
+                plateau_temp = self.simuler_deplacement(pion_coord, coup, self.plateau)
+                if self.est_coup_gagnant(plateau_temp, coup, pion):
+                    return pion_coord, direction
+
+        raise QuixoError("Aucun coup gagnant possible.")
