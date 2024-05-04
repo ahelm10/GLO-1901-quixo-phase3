@@ -83,17 +83,25 @@ class QuixoIA(Quixo):
                 if len(resultat[joueur]) > 0:
                     return joueur
         return None
+    
+    def pions_jouables(self,plateau, pion):
+        jouables  = []
+        for i in range(len(plateau)):
+            for j in range(len(plateau)):
+                if (plateau[i][j]).upper() in [pion.upper(), ' '] and (i in [0, 4] or j in [0, 4]):
+                    jouables.append((i,j))
+        return jouables
 
     def trouver_coup_gagnant(self, pion):
-        for i in range(5):
-            for j in range(5):
-                if self.plateau[i][j] == ' ':
-                    self.plateau[i][j] = pion
-                    if self.partie_terminee() == pion:
-                        self.plateau[i][j] = ' '
-                        return (i, j)
-                    self.plateau[i][j] = ' '
-        raise QuixoError("Aucun coup gagnant possible.")
+        try:
+            for f in [self.valider_horizontale, self.valider_verticale, self.valider_diagonale]:
+                resultat = f(self.plateau)
+                if pion in resultat and resultat[pion]:
+                    return resultat[pion]
+            raise QuixoError("Aucun coup gagnant possible.")
+        except QuixoError as e:
+            print(e)
+        return None
 
     def trouver_coup_bloquant(self, pion):
         adversaire = 'O' if pion == 'X' else 'X'

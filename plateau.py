@@ -130,7 +130,7 @@ class Plateau:
         return plateau_vide
 
 
-    def insertion(self, pion, destination, direction):
+    def insertion(self, pion, origine, direction):
         """Insère un pion dans le plateau
 
         Cette méthode appelle la méthode d'insertion appropriée selon la direction donnée.
@@ -151,17 +151,17 @@ class Plateau:
         if pion not in ["X", "O"]:
             raise QuixoError("Le pion à insérer doit être 'X' ou 'O'.")
         if direction == "haut":
-            self.insertion_par_le_haut(pion, destination)
+            self.insertion_par_le_haut(pion, origine)
         elif direction == "bas":
-            self.insertion_par_le_bas(pion, destination)
+            self.insertion_par_le_bas(pion, origine)
         elif direction == "gauche":
-            self.insertion_par_la_gauche(pion, destination)
+            self.insertion_par_la_gauche(pion, origine)
         elif direction == "droite":
-            self.insertion_par_la_droite(pion, destination)
+            self.insertion_par_la_droite(pion, origine)
         else:
             raise QuixoError("La direction doit être 'haut', 'bas', 'gauche' ou 'droite'.")
 
-    def insertion_par_le_bas(self, pion, destination):
+    def insertion_par_le_bas(self, pion, origine):
         """Insère un pion dans le plateau en direction du bas
 
         Args:
@@ -171,15 +171,15 @@ class Plateau:
         Raises:
             QuixoError: La destination doit avoir une position y de 5.
         """
-        x, y = destination
-        if y != 5:
-            raise QuixoError("La destination doit avoir une position y de 5.")
+        x1, y1 = origine
+        x = x1
+        y = 5
         x = x-1
         y = y-1
         for i in range(4):
             self.plateau[i][y] = self.plateau[i+1][y]
         self.plateau[4][y] = pion
-    def insertion_par_le_haut(self, pion, destination):
+    def insertion_par_le_haut(self, pion, origine):
         """Insère un pion dans le plateau en direction du haut
 
         Args:
@@ -189,16 +189,16 @@ class Plateau:
         Raises:
             QuixoError: La destination doit avoir une position y de 1.
         """
-        x, y = destination
-        if y != 1:
-            raise QuixoError("La destination doit avoir une position y de 1.")
+        x1, y1 = origine
+        x = x1
+        y = 1
         x = x-1
         y = y-1
         for i in range(4,0,-1):
             self.plateau[i][y] = self.plateau[i-1][y]
         self.plateau[0][y] = pion
 
-    def insertion_par_la_gauche(self, pion, destination):
+    def insertion_par_la_gauche(self, pion, origine):
         """Insère un pion dans le plateau en direction de la gauche
 
         Args:
@@ -208,16 +208,16 @@ class Plateau:
         Raises:
             QuixoError: La destination doit avoir une position x de 1.
         """
-        x, y = destination
-        if x != 1:
-            raise QuixoError("La destination doit avoir une position x de 1.")
+        x1, y1 = origine
+        x = 1
+        y = y1
         x = x-1
         y = y-1
         for i in range(4,0,-1):
             self.plateau[x][i] = self.plateau[x][i-1]
         self.plateau[x][0] = pion
 
-    def insertion_par_la_droite(self, pion, destination):
+    def insertion_par_la_droite(self, pion, origine):
         """Insère un pion dans le plateau en direction de la droite
 
         Args:
@@ -227,9 +227,9 @@ class Plateau:
         Raises:
             QuixoError: La destination doit avoir une position x de 5.
         """
-        x, y = destination
-        if x != 5:
-            raise QuixoError("La destination doit avoir une position x de 5.")
+        x1, y1 = origine
+        x = 5
+        y = y1
         x = x-1
         y = y-1
         for i in range(0,4):
