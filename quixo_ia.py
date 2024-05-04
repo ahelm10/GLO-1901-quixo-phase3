@@ -195,3 +195,48 @@ class QuixoIA(Quixo):
             coup_aleatoire = random.choice(coups_jouables)
             self.deplacer_pion(coup_aleatoire[0], coup_aleatoire[1], self.plateau)
             return coup_aleatoire
+    
+    import argparse
+
+    def parse_arguments():
+        parser = argparse.ArgumentParser(description="Jouer au Quixo contre l'ordinateur")
+        parser.add_argument('idul', type=str, help='IDUL du joueur')
+        parser.add_argument('-p', '--parties', action='store_true', help='Lister les parties existantes')
+        parser.add_argument('-a', '--automatique', action='store_true', help='Jouer automatiquement')
+        
+        return parser.parse_args()
+
+    def main():
+        args = parse_arguments()
+        
+        if args.parties:
+            lister_parties()
+        elif args.automatique:
+            jouer_automatiquement(args.idul)
+        else:
+            print("Aucune option spécifique choisie, lancement du jeu en mode manuel.")
+            jouer_manuellement(args.idul)
+
+    def lister_parties():
+        print("Listing des parties existantes...")
+
+    def jouer_manuellement(idul):
+        print(f"Démarrage du jeu manuel pour {idul}...")
+        
+    def jouer_automatiquement(idul):
+        print(f"Initialisation du jeu pour {idul} en mode automatique...")
+        jeu = Quixo(idul)  
+        jeu.initialiser_plateau()
+        
+        while not jeu.partie_terminee():
+            coup = jeu.jouer_le_coup()
+            jeu.afficher_plateau()
+            if jeu.verifier_gagnant():
+                print(f"Le gagnant est {jeu.gagnant()}")
+                break
+        
+        print("Fin du jeu")
+        jeu.afficher_resultats_finaux()
+
+    if __name__ == '__main__':
+        main()
